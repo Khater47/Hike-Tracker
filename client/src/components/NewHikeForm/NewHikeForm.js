@@ -20,8 +20,7 @@ import FileInput from '../FileInput/FileInput';
 import { getBase64 } from '../../helpers/utility';
 
 export default function NewHikeForm(props) {
-	const { setUpdateHikes, setShowAddNewHikeSuccess, setShowAddNewHikeError } =
-		props;
+	const { setUpdateHikes, setShowAddNewHikeSuccess, setShowAddNewHikeError } = props;
 	const [title, setTitle] = useState('');
 	const [province, setProvince] = useState({});
 	const [municipality, setMunicipality] = useState('');
@@ -38,7 +37,7 @@ export default function NewHikeForm(props) {
 	const [gpxPoints, setGpxPoints] = useState({});
 	const [validated, setValidated] = useState(false);
 	const [isFormValid, setIsFormValid] = useState(false);
-	const [inputValueMunicipality, setInputValueMunicipality] = useState("");
+	const [inputValueMunicipality, setInputValueMunicipality] = useState('');
 	const [hikeImage, setHikeImage] = useState(null);
 	const [hikeImage64, setHikeImage64] = useState(null);
 
@@ -46,8 +45,8 @@ export default function NewHikeForm(props) {
 
 	useEffect(() => {
 		const loadFile = () => {
-			getBase64(hikeImage).then(result => setHikeImage64(result));
-		}
+			getBase64(hikeImage).then((result) => setHikeImage64(result));
+		};
 		if (hikeImage) {
 			loadFile();
 		}
@@ -71,7 +70,7 @@ export default function NewHikeForm(props) {
 			referencePoints: referencePoints,
 			gpxData: JSON.stringify(gpxPoints),
 			description: description,
-			image: hikeImage64,
+			image: hikeImage64
 		};
 
 		const time = hike.expectedTimeString.split(' ');
@@ -111,16 +110,14 @@ export default function NewHikeForm(props) {
 			province === '' ||
 			municipality === '' ||
 			startPoint.type === '' ||
-			(startPoint.type === 'Hut/Parking lot' &&
-				(startPoint.lat === '' || startPoint.lon === '')) ||
+			(startPoint.type === 'Hut/Parking lot' && (startPoint.lat === '' || startPoint.lon === '')) ||
 			endPoint.type === '' ||
-			(endPoint.type === 'Hut/Parking lot' &&
-				(endPoint.lat === '' || endPoint.lon === '')) ||
+			(endPoint.type === 'Hut/Parking lot' && (endPoint.lat === '' || endPoint.lon === '')) ||
 			(startPoint.type === 'Address/Name of location' &&
 				(startPoint.lat === '' || startPoint.lon === '')) ||
 			(endPoint.type === 'Address/Name of location' &&
 				(endPoint.lat === '' || endPoint.lon === '')) ||
-				hikeImage64 === null
+			hikeImage64 === null
 		) {
 			valid = false;
 		}
@@ -139,9 +136,7 @@ export default function NewHikeForm(props) {
 	const addRefPoint = () => {
 		let list;
 		if (refPoint.type === 'Hut/Parking lot') {
-			if (
-				referencePoints.find((point) => point.id === refPoint.id) === undefined
-			) {
+			if (referencePoints.find((point) => point.id === refPoint.id) === undefined) {
 				API.getPlaceById(refPoint.id)
 					.then((place) => {
 						list = [...referencePoints, place];
@@ -149,14 +144,15 @@ export default function NewHikeForm(props) {
 					})
 					.then((list) => setReferencePoints(list));
 			}
-		} else if (refPoint.type === 'Address/Name of location' || refPoint.type === 'GPS coordinates') {
-			if (
-				referencePoints.find((point) => point.id === refPoint.id) === undefined
-			) {
+		} else if (
+			refPoint.type === 'Address/Name of location' ||
+			refPoint.type === 'GPS coordinates'
+		) {
+			if (referencePoints.find((point) => point.id === refPoint.id) === undefined) {
 				list = [...referencePoints, refPoint];
 				setReferencePoints(list);
 			}
-		} 
+		}
 	};
 
 	const delRefPoint = (pointId) => {
@@ -165,17 +161,12 @@ export default function NewHikeForm(props) {
 	};
 
 	useEffect(() => {
-		setMunicipality("");
-		setInputValueMunicipality("")
+		setMunicipality('');
+		setInputValueMunicipality('');
 	}, [JSON.stringify(gpxPoints)]);
 
 	return (
-		<Form
-			className="text-start"
-			noValidate
-			validated={validated}
-			onSubmit={handleSubmit}
-		>
+		<Form className="text-start" noValidate validated={validated} onSubmit={handleSubmit}>
 			<Row className="mb-3">
 				<Col>
 					{/*Title field*/}
@@ -183,13 +174,9 @@ export default function NewHikeForm(props) {
 				</Col>
 				<Col>
 					{/*Province field*/}
-					<Province
-						province={province}
-						setProvince={setProvince}
-						validated={validated}
-					/>
+					<Province province={province} setProvince={setProvince} validated={validated} />
 					{/*Municipality field*/}
-					{Object.keys(province).length !== 0 ?
+					{Object.keys(province).length !== 0 ? (
 						<Municipality
 							municipality={municipality}
 							setMunicipality={setMunicipality}
@@ -197,7 +184,10 @@ export default function NewHikeForm(props) {
 							validated={validated}
 							setInputValueMunicipality={setInputValueMunicipality}
 							inputValueMunicipality={inputValueMunicipality}
-						/> : ""}
+						/>
+					) : (
+						''
+					)}
 				</Col>
 			</Row>
 
@@ -208,10 +198,7 @@ export default function NewHikeForm(props) {
 				</Col>
 				<Col>
 					{/*Expected time field*/}
-					<ExpectedTime
-						expectedTime={expectedTime}
-						setExpectedTime={setExpectedTime}
-					/>
+					<ExpectedTime expectedTime={expectedTime} setExpectedTime={setExpectedTime} />
 				</Col>
 				<Col>
 					{/*Ascent field*/}
@@ -288,13 +275,13 @@ export default function NewHikeForm(props) {
 				{/*Image field*/}
 				<Col>
 					<FileInput
-						title={"Upload a image of the track"}
+						title={'Upload a image of the track'}
 						required={true}
-						accept={".png, .jpeg"}
+						accept={'.png, .jpeg, .jpg'}
 						onChange={setHikeImage}
 						value={hikeImage}
-						description={"File type accepted: .png, .jpeg"}
-						errorText={"Please insert a valid file for the image"}
+						description={'File type accepted: .png, .jpeg, jpg'}
+						errorText={'Please insert a valid file for the image'}
 					/>
 				</Col>
 			</Row>
@@ -303,10 +290,7 @@ export default function NewHikeForm(props) {
 			<Row className="mb-3">
 				{/*Description field*/}
 				<Col>
-					<Description
-						description={description}
-						setDescription={setDescription}
-					/>
+					<Description description={description} setDescription={setDescription} />
 				</Col>
 			</Row>
 
