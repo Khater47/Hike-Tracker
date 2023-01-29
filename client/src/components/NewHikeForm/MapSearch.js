@@ -35,7 +35,7 @@ export default function MapSearch(props) {
 			setTimeout(() => {
 				setOptions(geoSearch(inputValue));
 				resolve(options);
-			}, 250);
+			}, 1250);
 		});
 
 	return (
